@@ -82,6 +82,7 @@ def evaluate_vector(vector):
                 score['white'] += WHITE_6SCORES[i]
             if BLACK_6PATTERNS[i] == temp:
                 score['black'] += BLACK_6SCORES[i]
-                
+    print score        
     return score
+
         

@@ -1,4 +1,4 @@
-#based on xerwin's tutorial and pygame documentation
+#pygame implementation based on xerwin's tutorial and pygame documentation
 
 import pygame
 from pygame.locals import *
