@@ -4,15 +4,15 @@ from sys import exit
 from boardstate import *
 from gomoku import Gomoku
 from render import GameRender
-#from gomoku_ai import gomokuAI
+from gomoku_ai import gomokuAI
 
 if __name__ == '__main__': 
     gomoku = Gomoku()
     render = GameRender(gomoku)
     #save for adding AI later
-    #ai = gomokuAI(gomoku, BoardState.WHITE)
+    ai = gomokuAI(gomoku, BoardState.WHITE)
     result = BoardState.EMPTY
-    enable_ai = False
+    enable_ai = True
 
     while True:
         #pygame event
@@ -29,7 +29,7 @@ if __name__ == '__main__':
                 if result != BoardState.EMPTY:
                     break
                 if enable_ai:
-                    #ai.one_step()
+                    ai.one_step()
                     result = gomoku.get_chess_result()
                 else:
                     render.change_state()
