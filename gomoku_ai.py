@@ -22,8 +22,7 @@ class gomokuAI(object):
 				return True
 		return False
 
-
-	def evaluate(self):
+    def evaluate(self):
         vectors = []
 
         for i in xrange(N):
@@ -56,4 +55,3 @@ class gomokuAI(object):
         		board_score += score['black'] - score['white']
 
         return board_score
-        
