@@ -24,9 +24,8 @@ class gomokuAI(object):
 
 
 	def evaluate(self):
+        vectors = []
 
-		vectors = []
-        
         for i in xrange(N):
             vectors.append(self.__gomoku.get_chessMap()[i])
             
@@ -57,3 +56,4 @@ class gomokuAI(object):
         		board_score += score['black'] - score['white']
 
         return board_score
+        
