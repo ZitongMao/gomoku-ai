@@ -44,8 +44,8 @@ class gomokuAI(object):
 
                 if self.__gomoku.get_chessMap()[i+xdirection][j+ydirection] != BoardState.EMPTY:
                 	return True
-                elif self.__gomoku.get_chessMap()[i+xdirection*2][j+ydirection*2] != BoardState.EMPTY:
-                	return True
+                # elif self.__gomoku.get_chessMap()[i+xdirection*2][j+ydirection*2] != BoardState.EMPTY:
+                # 	return True
 
 		return False
 
@@ -127,6 +127,10 @@ class gomokuAI(object):
                 alpha = temp_score
                 (ai.__currentI, ai.__currentJ) = (i, j)
         return alpha
+    def first_step(self):
+        self.__gomoku.set_chessboard_state(7, 7,
+                        self.__currentState)
+        return True
 
     def one_step(self):
         node = gomokuAI(self.__gomoku, self.__currentState,

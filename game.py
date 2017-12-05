@@ -11,10 +11,14 @@ if __name__ == '__main__':
     gomoku = Gomoku()
     render = GameRender(gomoku)
     #save for adding AI later
-    ai = gomokuAI(gomoku, BoardState.WHITE, 3)
+    ai = gomokuAI(gomoku, BoardState.BLACK, 5)
 
     result = BoardState.EMPTY
     enable_ai = True
+
+    ai.first_step()
+    result = gomoku.get_chess_result()
+    render.change_state()
 
     while True:
         #pygame event
