@@ -10,8 +10,8 @@ from alpha_beta import alpha_beta_prune
 if __name__ == '__main__': 
     gomoku = Gomoku()
     render = GameRender(gomoku)
-    #save for adding AI later
-    ai = gomokuAI(gomoku, BoardState.BLACK, 5)
+    #change the AI here
+    ai = gomokuAI(gomoku, BoardState.BLACK, 2)
 
     result = BoardState.EMPTY
     enable_ai = True

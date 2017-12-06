@@ -33,22 +33,80 @@ class gomokuAI(object):
 
         self.__gomoku.set_chessboard_state(i, j, state)
 
-
-    def has_neighbor(self, state, i, j):
-        directions = [[(-1, 0), (1, 0)], \
-              [(0, -1), (0, 1)], \
-              [(-1, 1), (1, -1)], \
-              [(-1, -1), (1, 1)]]
+    def has_neighbor(
+        self,
+        state,
+        i,
+        j,
+        ):
+        directions = [[(-1, 0), (1, 0)], [(0, -1), (0, 1)], [(-1, 1),
+                      (1, -1)], [(-1, -1), (1, 1)]]
         for axis in directions:
             for (xdirection, ydirection) in axis:
 
-                if self.__gomoku.get_chessMap()[i+xdirection][j+ydirection] != BoardState.EMPTY:
-                	return True
-                # elif self.__gomoku.get_chessMap()[i+xdirection*2][j+ydirection*2] != BoardState.EMPTY:
-                # 	return True
+                if xdirection != 0 and (j + xdirection < 0 or j
+                        + xdirection >= N):
+                    break
+                if ydirection != 0 and (i + ydirection  < 0 or i + ydirection >= N):
+                    break
+                if self.__gomoku.get_chessMap()[i + ydirection][j
+                        + xdirection] != BoardState.EMPTY:
+                    return True
 
-		return False
+                if xdirection != 0 and (j + xdirection * 2 < 0 or j
+                        + xdirection * 2 >= N):
+                    break
 
+                if ydirection != 0 and (i + ydirection * 2 < 0 or i
+                        + ydirection * 2 >= N):
+                    break
+
+                if self.__gomoku.get_chessMap()[i + ydirection * 2][j
+                        + xdirection * 2] != BoardState.EMPTY:
+                    return True
+
+        return False
+
+    def direction_count(
+        self,
+        i,
+        j,
+        xdirection,
+        ydirection,
+        state,
+        ):
+        count = 0
+        for step in range(1, 5):  # look four more steps on a certain direction
+            if xdirection != 0 and (j + xdirection * step < 0 or j
+                                    + xdirection * step >= N):
+                break
+            if ydirection != 0 and (i + ydirection * step < 0 or i
+                                    + ydirection * step >= N):
+                break
+            if self.__gomoku.get_chessMap()[i + ydirection * step][j
+                    + xdirection * step] == state:
+                count += 1
+            else:
+                break
+        return count
+
+    def has_checkmate(
+        self,
+        state,
+        i,
+        j,
+        ):
+
+        directions = [[(-1, 0), (1, 0)], [(0, -1), (0, 1)], [(-1, 1),
+                      (1, -1)], [(-1, -1), (1, 1)]]
+
+        for axis in directions:
+            axis_count = 1
+            for (xdirection, ydirection) in axis:
+                axis_count += self.direction_count(i, j, xdirection,
+                        ydirection, state)
+                if axis_count >= 5:
+                    return True
 
     def generate(self):
         for i in xrange(N):
@@ -56,19 +114,24 @@ class gomokuAI(object):
                 if self.__gomoku.get_chessMap()[i][j] \
                     != BoardState.EMPTY:
                     continue  # only search for available spots
-                if not self.has_neighbor(self.__gomoku.get_chessMap()[i][j], i, j):
-                	continue
+                if not self.has_neighbor(self.__gomoku.get_chessMap()[i][j],
+                        i, j):
+                    continue
+
                 if self.__currentState == BoardState.WHITE:
                     nextState = BoardState.BLACK
                 else:
                     nextState = BoardState.WHITE
+
                 nextPlay = gomokuAI(deepcopy(self.__gomoku), nextState,
                                     self.__depth - 1)
                 nextPlay.set_board(i, j, self.__currentState)
 
                 yield (nextPlay, i, j)
+
     def negate(self):
         return -self.evaluate()
+
     def evaluate(self):
         vectors = []
 
@@ -107,7 +170,6 @@ class gomokuAI(object):
                 board_score += score['black'] - score['white']
             else:
                 board_score += score['white'] - score['black']
-        print board_score
         return board_score
 
     def alpha_beta_prune(
@@ -116,9 +178,10 @@ class gomokuAI(object):
         alpha=-10000000,
         beta=10000000,
         ):
+
         if ai.__depth <= 0:
-        	score = ai.negate()
-        	return score
+            score = ai.negate()
+            return score
         for (nextPlay, i, j) in ai.generate():
             temp_score = -self.alpha_beta_prune(nextPlay, -beta, -alpha)
             if temp_score > beta:
@@ -127,12 +190,28 @@ class gomokuAI(object):
                 alpha = temp_score
                 (ai.__currentI, ai.__currentJ) = (i, j)
         return alpha
+
     def first_step(self):
-        self.__gomoku.set_chessboard_state(7, 7,
-                        self.__currentState)
+        self.__gomoku.set_chessboard_state(7, 7, self.__currentState)
         return True
 
     def one_step(self):
+        # for i in xrange(N):
+        #     for j in xrange(N):
+        #         if self.__gomoku.get_chessMap()[i][j] \
+        #             != BoardState.EMPTY:
+        #             continue  # only search for available spots
+        #         if not self.has_neighbor(self.__gomoku.get_chessMap()[i][j],
+        #                 i, j):
+        #             continue
+        #         print i, j
+        #         if self.has_checkmate(self.__currentState, i, j):
+        #             print "has checkmate"
+        #             self.__gomoku.set_chessboard_state(i, j,
+        #                     self.__currentState)
+
+        #             return True
+
         node = gomokuAI(self.__gomoku, self.__currentState,
                         self.__depth)
         score = self.alpha_beta_prune(node)
@@ -151,4 +230,4 @@ class gomokuAI(object):
 
 
 
-			
+            

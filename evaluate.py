@@ -11,7 +11,7 @@ WHITE_6PATTERNS = [['empty', 'white', 'white', 'white', 'white','empty'],
                    ['empty', 'empty', 'white', 'empty', 'empty','empty'],
                    ['empty', 'empty', 'empty', 'white', 'empty','empty']]
 
-WHITE_6SCORES = [5000,800,800,800,800,150,150,150,30,30]
+WHITE_6SCORES = [20000,5000,5000,500,500,100,100,100,10,10]
 
 WHITE_5PATTERNS = [['white', 'white', 'white', 'white', 'white'],
                    ['white', 'white', 'white', 'white', 'empty'],
@@ -19,7 +19,7 @@ WHITE_5PATTERNS = [['white', 'white', 'white', 'white', 'white'],
                    ['white', 'white', 'empty', 'white', 'white'],
                    ['white', 'empty', 'white', 'white', 'white'],
                    ['white', 'white', 'white', 'empty', 'white']]
-WHITE_5SCORES = [100000,800,800,800,800,800]
+WHITE_5SCORES = [100000,20000,20000,20000,20000,20000]
 
 BLACK_6PATTERNS = [['empty', 'black', 'black', 'black', 'black','empty'],
                    ['empty', 'black', 'black', 'black', 'empty','empty'],
@@ -31,7 +31,7 @@ BLACK_6PATTERNS = [['empty', 'black', 'black', 'black', 'black','empty'],
                    ['empty', 'black', 'empty', 'black', 'empty','empty'],
                    ['empty', 'empty', 'black', 'empty', 'empty','empty'],
                    ['empty', 'empty', 'empty', 'black', 'empty','empty']]
-BLACK_6SCORES = [5000,800,800,800,800,150,150,150,30,30]
+BLACK_6SCORES = [20000,5000,5000,500,500,100,100,100,10,10]
 
 BLACK_5PATTERNS = [['black', 'black', 'black', 'black', 'black'],
                    ['black', 'black', 'black', 'black', 'empty'],
@@ -39,7 +39,7 @@ BLACK_5PATTERNS = [['black', 'black', 'black', 'black', 'black'],
                    ['black', 'black', 'empty', 'black', 'black'],
                    ['black', 'empty', 'black', 'black', 'black'],
                    ['black', 'black', 'black', 'empty', 'black']]
-BLACK_5SCORES = [100000,800,800,800,800,800]
+BLACK_5SCORES = [100000,20000,20000,20000,20000,20000]
 
 def enum_to_string(vector):
     string_list = []
@@ -82,7 +82,6 @@ def evaluate_vector(vector):
                 score['white'] += WHITE_6SCORES[i]
             if BLACK_6PATTERNS[i] == temp:
                 score['black'] += BLACK_6SCORES[i]
-    print score        
     return score
 
         
