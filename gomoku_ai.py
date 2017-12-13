@@ -102,7 +102,7 @@ class gomokuAI(object):
         ):
 
         pattern = []
-        for step in range(1, 5):  # look four more steps on a certain direction
+        for step in range(-1, 5):  # look four more steps on a certain direction
             if xdirection != 0 and (j + xdirection * step < 0 or j
                                     + xdirection * step >= N):
                 break
@@ -145,13 +145,14 @@ class gomokuAI(object):
                       (1, -1)], [(-1, -1), (1, 1)]]
 
         for axis in directions:
-            currentPattern = [state]
+            currentPattern = []
             for (xdirection, ydirection) in axis:
                 currentPattern += self.direction_pattern(i, j,
                         xdirection, ydirection, state)
-                if enum_to_string(currentPattern) == WHITE_5PATTERNS[1]:
+                currentPattern[1] = state
+                if enum_to_string(currentPattern) == WHITE_6PATTERNS[0]:
                     return True
-                if enum_to_string(currentPattern) == BLACK_5PATTERNS[1]:
+                if enum_to_string(currentPattern) == BLACK_6PATTERNS[0]:
                     return True
         return False
 
@@ -198,6 +199,7 @@ class gomokuAI(object):
         return False
 
     def generate(self):
+        frontierList = []
         for i in xrange(N):
             for j in xrange(N):
                 if self.__gomoku.get_chessMap()[i][j] \
@@ -216,7 +218,18 @@ class gomokuAI(object):
                                     self.__depth - 1)
                 nextPlay.set_board(i, j, self.__currentState)
 
-                yield (nextPlay, i, j)
+                frontierList.append((nextPlay, i, j))
+
+        #Degree Heuristcs, Sort points based on their evaluation
+        frontierScores = []
+        for node in frontierList:
+            frontierScores.append(self.evaluate_point(node[1],node[2]))
+        
+        frontierZipped = zip(frontierList,frontierScores)
+        frontierSorted = sorted(frontierZipped, key = lambda t: t[1])
+        frontierList, frontierScores = zip(*frontierSorted)
+        return frontierList
+
 
     def negate(self):
         return -self.evaluate()
@@ -261,6 +274,49 @@ class gomokuAI(object):
                 board_score += score['white'] - score['black']
         return board_score
 
+    def evaluate_point(self,i,j):
+        vectors = []
+        vectors.append(self.__gomoku.get_chessMap()[i])
+        vectors.append([self.__gomoku.get_chessMap()[i][j] for i in
+                           range(N)])
+
+        directions = [[(-1, 1),(1, -1)], [(-1, -1), (1, 1)]]
+
+
+        for axis in directions:
+            currentPattern = [self.__currentState]
+
+            axisPattern = []
+            for (xdirection, ydirection) in axis:
+
+                pattern = []
+
+                for step in range(1, N):  
+                    if xdirection != 0 and (j + xdirection * step < 0 or j
+                                            + xdirection * step >= N):
+                        break
+                    if ydirection != 0 and (i + ydirection * step < 0 or i
+                                            + ydirection * step >= N):
+                        break
+
+                    pattern.append(self.__gomoku.get_chessMap()[i + ydirection
+                                   * step][j + xdirection * step])
+                axisPattern.append(pattern)
+            vector = axisPattern[0][::-1] + currentPattern + axisPattern[1]
+            vectors.append(vector)
+
+        point_score = 0
+        for v in vectors:
+            score = evaluate_vector(v)
+            if self.__currentState == BoardState.WHITE:
+                point_score += score['white']
+            else:
+                point_score += score['black']
+        return point_score
+
+
+
+
     def alpha_beta_prune(
         self,
         ai,
@@ -271,7 +327,13 @@ class gomokuAI(object):
         if ai.__depth <= 0:
             score = ai.negate()
             return score
+        #only use the first 10 nodes
+        count = 0
+
         for (nextPlay, i, j) in ai.generate():
+            # count += 1
+            # if count > 10:
+            #     break
             temp_score = -self.alpha_beta_prune(nextPlay, -beta, -alpha)
             if temp_score > beta:
                 return beta
@@ -290,15 +352,16 @@ class gomokuAI(object):
                 if self.__gomoku.get_chessMap()[i][j] \
                     != BoardState.EMPTY:
                     continue  # only search for available spots
-                if not self.has_neighbor(self.__gomoku.get_chessMap()[i][j],
-                        i, j):
-                    continue
 
                 if self.has_checkmate(self.__currentState, i, j):
                     print 'has checkmate'
                     self.__gomoku.set_chessboard_state(i, j,
                             self.__currentState)
                     return True
+
+                if not self.has_neighbor(self.__gomoku.get_chessMap()[i][j],
+                        i, j):
+                    continue
 
                 if self.has_check(self.__currentState, i, j):
                     print 'has check, checking if opponent already has one...'
