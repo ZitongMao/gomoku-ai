@@ -149,7 +149,8 @@ class gomokuAI(object):
             for (xdirection, ydirection) in axis:
                 currentPattern += self.direction_pattern(i, j,
                         xdirection, ydirection, state)
-                currentPattern[1] = state
+                if len(currentPattern) > 2:
+                    currentPattern[1] = state
                 if enum_to_string(currentPattern) == WHITE_6PATTERNS[0]:
                     return True
                 if enum_to_string(currentPattern) == BLACK_6PATTERNS[0]:
@@ -256,6 +257,7 @@ class gomokuAI(object):
 
         vectors.append([self.__gomoku.get_chessMap()[x][N - x - 1]
                        for x in range(N)])
+        
         for i in xrange(4, N - 1):
             v = [self.__gomoku.get_chessMap()[x][i - x] for x in
                  xrange(i, -1, -1)]
@@ -280,30 +282,34 @@ class gomokuAI(object):
         vectors.append([self.__gomoku.get_chessMap()[i][j] for i in
                            range(N)])
 
-        directions = [[(-1, 1),(1, -1)], [(-1, -1), (1, 1)]]
+        if j > i:
+            v = [self.__gomoku.get_chessMap()[x][x+j-i] for x in
+                 range(0, N-j+i)]
+            vectors.append(v)
 
+        elif j == i:
+            vectors.append([self.__gomoku.get_chessMap()[x][x] for x in
+                       range(N)])
 
-        for axis in directions:
-            currentPattern = [self.__currentState]
+        elif j < i:
+            v = [self.__gomoku.get_chessMap()[x+i-j][x] for x in
+                 range(0, N-i+j)]
+            vectors.append(v)
 
-            axisPattern = []
-            for (xdirection, ydirection) in axis:
+        if i+j == N-1:
+            vectors.append([self.__gomoku.get_chessMap()[x][N-1 - x]
+                       for x in range(N)])
 
-                pattern = []
+        elif i+j < N-1:
+            v = [self.__gomoku.get_chessMap()[x][N-1 - x - abs(i-j)]
+                       for x in range(N-abs(i-j))]
+            vectors.append(v)
 
-                for step in range(1, N):  
-                    if xdirection != 0 and (j + xdirection * step < 0 or j
-                                            + xdirection * step >= N):
-                        break
-                    if ydirection != 0 and (i + ydirection * step < 0 or i
-                                            + ydirection * step >= N):
-                        break
+        elif i+j > N-1:
+            
+            vectors.append([self.__gomoku.get_chessMap()[x][N-1 - x +(i+j-N+1)]
+                       for x in range(i+j-N+1, N)])
 
-                    pattern.append(self.__gomoku.get_chessMap()[i + ydirection
-                                   * step][j + xdirection * step])
-                axisPattern.append(pattern)
-            vector = axisPattern[0][::-1] + currentPattern + axisPattern[1]
-            vectors.append(vector)
 
         point_score = 0
         for v in vectors:
@@ -328,12 +334,10 @@ class gomokuAI(object):
             score = ai.negate()
             return score
         #only use the first 10 nodes
-        count = 0
 
         for (nextPlay, i, j) in ai.generate():
-            # count += 1
-            # if count > 10:
-            #     break
+        # for (nextPlay, i, j) in ai.generate()[:20]:
+            
             temp_score = -self.alpha_beta_prune(nextPlay, -beta, -alpha)
             if temp_score > beta:
                 return beta
