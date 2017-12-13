@@ -38,6 +38,7 @@ class gomokuAI(object):
         i,
         j,
         ):
+
         directions = [[(-1, 0), (1, 0)], [(0, -1), (0, 1)], [(-1, 1),
                       (1, -1)], [(-1, -1), (1, 1)]]
         for axis in directions:
@@ -46,7 +47,8 @@ class gomokuAI(object):
                 if xdirection != 0 and (j + xdirection < 0 or j
                         + xdirection >= N):
                     break
-                if ydirection != 0 and (i + ydirection  < 0 or i + ydirection >= N):
+                if ydirection != 0 and (i + ydirection < 0 or i
+                        + ydirection >= N):
                     break
                 if self.__gomoku.get_chessMap()[i + ydirection][j
                         + xdirection] != BoardState.EMPTY:
@@ -74,6 +76,7 @@ class gomokuAI(object):
         ydirection,
         state,
         ):
+
         count = 0
         for step in range(1, 5):  # look four more steps on a certain direction
             if xdirection != 0 and (j + xdirection * step < 0 or j
@@ -89,27 +92,28 @@ class gomokuAI(object):
                 break
         return count
 
-    # def direction_pattern(
-    #     self,
-    #     i,
-    #     j,
-    #     xdirection,
-    #     ydirection,
-    #     state,
-    #     ):
-    #     pattern = []
-    #     for step in range(1, 5):  # look four more steps on a certain direction
-    #         if xdirection != 0 and (j + xdirection * step < 0 or j
-    #                                 + xdirection * step >= N):
-    #             break
-    #         if ydirection != 0 and (i + ydirection * step < 0 or i
-    #                                 + ydirection * step >= N):
-    #             break
+    def direction_pattern(
+        self,
+        i,
+        j,
+        xdirection,
+        ydirection,
+        state,
+        ):
 
-    #         pattern.append(self.__gomoku.get_chessMap()[i + ydirection * step][j
-    #                 + xdirection * step])
-            
-    #     return pattern
+        pattern = []
+        for step in range(1, 5):  # look four more steps on a certain direction
+            if xdirection != 0 and (j + xdirection * step < 0 or j
+                                    + xdirection * step >= N):
+                break
+            if ydirection != 0 and (i + ydirection * step < 0 or i
+                                    + ydirection * step >= N):
+                break
+
+            pattern.append(self.__gomoku.get_chessMap()[i + ydirection
+                           * step][j + xdirection * step])
+
+        return pattern
 
     def has_checkmate(
         self,
@@ -128,6 +132,7 @@ class gomokuAI(object):
                         ydirection, state)
                 if axis_count >= 5:
                     return True
+        return False
 
     def has_check(
         self,
@@ -142,12 +147,55 @@ class gomokuAI(object):
         for axis in directions:
             currentPattern = [state]
             for (xdirection, ydirection) in axis:
-                currentPattern += self.direction_pattern(i, j, xdirection,
-                        ydirection, state)
+                currentPattern += self.direction_pattern(i, j,
+                        xdirection, ydirection, state)
                 if enum_to_string(currentPattern) == WHITE_5PATTERNS[1]:
                     return True
-                elif enum_to_string(currentPattern) == BLACK_5PATTERNS[1]:
+                if enum_to_string(currentPattern) == BLACK_5PATTERNS[1]:
                     return True
+        return False
+
+    def opponent_has_checkmate(self, state):
+        vectors = []
+
+        for i in xrange(N):
+            vectors.append(self.__gomoku.get_chessMap()[i])
+
+        for j in xrange(N):
+            vectors.append([self.__gomoku.get_chessMap()[i][j] for i in
+                           range(N)])
+
+        vectors.append([self.__gomoku.get_chessMap()[x][x] for x in
+                       range(N)])
+        for i in xrange(1, N - 4):
+            v = [self.__gomoku.get_chessMap()[x][x - i] for x in
+                 range(i, N)]
+            vectors.append(v)
+            v = [self.__gomoku.get_chessMap()[y - i][y] for y in
+                 range(i, N)]
+            vectors.append(v)
+
+        vectors.append([self.__gomoku.get_chessMap()[x][N - x - 1]
+                       for x in range(N)])
+        for i in xrange(4, N - 1):
+            v = [self.__gomoku.get_chessMap()[x][i - x] for x in
+                 xrange(i, -1, -1)]
+            vectors.append(v)
+            v = [self.__gomoku.get_chessMap()[x][N - x + N - i - 2]
+                 for x in xrange(N - i - 1, N)]
+            vectors.append(v)
+
+        for vector in vectors:
+            temp = enum_to_string(vector)
+            if state == BoardState.BLACK:
+                for pattern in WHITE_5PATTERNS:
+                    if sublist(pattern, temp):
+                        return True
+            if state == BoardState.WHITE:
+                for pattern in BLACK_5PATTERNS:
+                    if sublist(pattern, temp):
+                        return True
+        return False
 
     def generate(self):
         for i in xrange(N):
@@ -232,8 +280,6 @@ class gomokuAI(object):
                 (ai.__currentI, ai.__currentJ) = (i, j)
         return alpha
 
-
-
     def first_step(self):
         self.__gomoku.set_chessboard_state(7, 7, self.__currentState)
         return True
@@ -247,18 +293,27 @@ class gomokuAI(object):
                 if not self.has_neighbor(self.__gomoku.get_chessMap()[i][j],
                         i, j):
                     continue
-                print i, j
+
                 if self.has_checkmate(self.__currentState, i, j):
-                    print "has checkmate"
+                    print 'has checkmate'
                     self.__gomoku.set_chessboard_state(i, j,
                             self.__currentState)
                     return True
 
-                # if self.has_check(self.__currentState, i, j):
-                #     print "has check"
-                #     self.__gomoku.set_chessboard_state(i, j,
-                #             self.__currentState)
-                #     return True
+                if self.has_check(self.__currentState, i, j):
+                    print 'has check, checking if opponent already has one...'
+
+                    if self.opponent_has_checkmate(self.__currentState) is True:
+
+                        print 'not safe, searching other moves...'
+
+                    elif self.opponent_has_checkmate(self.__currentState) is False:
+                        print 'safe'
+                        self.__gomoku.set_chessboard_state(i, j,
+                                self.__currentState)
+                        return True
+                    
+                        
 
         node = gomokuAI(self.__gomoku, self.__currentState,
                         self.__depth)
@@ -278,4 +333,3 @@ class gomokuAI(object):
 
 
 
-            
