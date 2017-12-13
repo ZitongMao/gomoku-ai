@@ -99,4 +99,5 @@ def evaluate_vector(vector):
                 score['black'] += BLACK_6SCORES[i]
     return score
 
+
         
