@@ -11,8 +11,8 @@ WHITE_6PATTERNS = [['empty', 'white', 'white', 'white', 'white','empty'],
                    ['empty', 'empty', 'white', 'empty', 'empty','empty'],
                    ['empty', 'empty', 'empty', 'white', 'empty','empty']]
 
-# WHITE_6SCORES = [50000,5000,5000,500,500,100,100,100,10,10]
-WHITE_6SCORES = [8640,720,720,720,720,120,120,120,20,20] #based on Dong (2015)
+WHITE_6SCORES = [20000,5000,5000,500,500,100,100,100,10,10]
+# WHITE_6SCORES = [8640,720,720,720,720,120,120,120,20,20] #based on Dong (2015)
 
 
 WHITE_5PATTERNS = [['white', 'white', 'white', 'white', 'white'],
@@ -21,8 +21,8 @@ WHITE_5PATTERNS = [['white', 'white', 'white', 'white', 'white'],
                    ['white', 'white', 'empty', 'white', 'white'],
                    ['white', 'empty', 'white', 'white', 'white'],
                    ['white', 'white', 'white', 'empty', 'white']]
-# WHITE_5SCORES = [10000000,20000,20000,20000,20000,20000]
-WHITE_5SCORES = [50000,720,720,720,720,720] #based on Dong (2015)
+WHITE_5SCORES = [100000,20000,20000,20000,20000,20000]
+# WHITE_5SCORES = [50000,720,720,720,720,720] #based on Dong (2015)
 
 BLACK_6PATTERNS = [['empty', 'black', 'black', 'black', 'black','empty'],
                    ['empty', 'black', 'black', 'black', 'empty','empty'],
@@ -34,8 +34,8 @@ BLACK_6PATTERNS = [['empty', 'black', 'black', 'black', 'black','empty'],
                    ['empty', 'black', 'empty', 'black', 'empty','empty'],
                    ['empty', 'empty', 'black', 'empty', 'empty','empty'],
                    ['empty', 'empty', 'empty', 'black', 'empty','empty']]
-# BLACK_6SCORES = [50000,5000,5000,500,500,100,100,100,10,10]
-BLACK_6SCORES = [8640,720,720,720,720,120,120,120,20,20] #based on Dong (2015)
+BLACK_6SCORES = [20000,5000,5000,500,500,100,100,100,10,10]
+# BLACK_6SCORES = [8640,720,720,720,720,120,120,120,20,20] #based on Dong (2015)
 
 
 BLACK_5PATTERNS = [['black', 'black', 'black', 'black', 'black'],
@@ -44,8 +44,8 @@ BLACK_5PATTERNS = [['black', 'black', 'black', 'black', 'black'],
                    ['black', 'black', 'empty', 'black', 'black'],
                    ['black', 'empty', 'black', 'black', 'black'],
                    ['black', 'black', 'black', 'empty', 'black']]
-# BLACK_5SCORES = [1000000,20000,20000,20000,20000,20000]
-BLACK_5SCORES = [50000,720,720,720,720,720] #based on Dong (2015)
+BLACK_5SCORES = [100000,20000,20000,20000,20000,20000]
+# BLACK_5SCORES = [50000,720,720,720,720,720] #based on Dong (2015)
 
 def sublist(small, big):
     for i in xrange(len(big)-len(small)+1):
