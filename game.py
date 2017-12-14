@@ -6,23 +6,28 @@ from gomoku import Gomoku
 from render import GameRender
 from gomoku_ai import *
 
+#run in terminal
 if __name__ == '__main__': 
     gomoku = Gomoku()
     render = GameRender(gomoku)
-    #change the AI here
+
+    #change the AI here, bigger the depth stronger the AI
     ai = gomokuAI(gomoku, BoardState.BLACK, 2)
-    ai2 = gomokuAI(gomoku, BoardState.WHITE, 2)
+    ai2 = gomokuAI(gomoku, BoardState.WHITE, 1)
 
     result = BoardState.EMPTY
-    enable_ai = True
-    enable_ai2 = True
 
+    #enable ai here
+    enable_ai = True
+    enable_ai2 = False
+
+    #edit if ai plays first
     ai.first_step()
     result = gomoku.get_chess_result()
     render.change_state()
 
     while True:
-
+        #ai vs ai section
         if enable_ai2:
             ai2.one_step()
             result = gomoku.get_chess_result()
@@ -42,7 +47,7 @@ if __name__ == '__main__':
 
         
 
-        #pygame event
+        #pygame event, player vs. ai section
         for event in pygame.event.get():
             #exit
 
