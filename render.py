@@ -1,5 +1,3 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
 # pygame implementation based on xerwin's tutorial and pygame documentation
 
 import pygame

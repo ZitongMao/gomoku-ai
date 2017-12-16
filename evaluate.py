@@ -21,7 +21,7 @@ WHITE_5PATTERNS = [['white', 'white', 'white', 'white', 'white'],
                    ['white', 'white', 'empty', 'white', 'white'],
                    ['white', 'empty', 'white', 'white', 'white'],
                    ['white', 'white', 'white', 'empty', 'white']]
-WHITE_5SCORES = [100000,10000,10000,10000,10000,10000]
+WHITE_5SCORES = [1000000,5000,5000,5000,5000,5000]
 # WHITE_5SCORES = [50000,720,720,720,720,720] #based on Dong (2015)
 
 BLACK_6PATTERNS = [['empty', 'black', 'black', 'black', 'black','empty'],
@@ -44,10 +44,13 @@ BLACK_5PATTERNS = [['black', 'black', 'black', 'black', 'black'],
                    ['black', 'black', 'empty', 'black', 'black'],
                    ['black', 'empty', 'black', 'black', 'black'],
                    ['black', 'black', 'black', 'empty', 'black']]
-BLACK_5SCORES = [100000,10000,10000,10000,10000,10000]
+BLACK_5SCORES = [1000000,5000,5000,5000,5000,5000]
 # BLACK_5SCORES = [50000,720,720,720,720,720] #based on Dong (2015)
 
 def sublist(small, big):
+    '''
+    Return True if small is a sublist of big.
+    '''
     for i in xrange(len(big)-len(small)+1):
         for j in xrange(len(small)):
             if big[i+j] != small[j]:
@@ -57,6 +60,9 @@ def sublist(small, big):
     return False
 
 def enum_to_string(vector):
+    '''
+    Change BoardState.WHITE to 'white'.
+    '''
     string_list = []
     for item in vector:
         if item == BoardState.BLACK:
@@ -70,6 +76,9 @@ def enum_to_string(vector):
 
 
 def evaluate_vector(vector):
+    '''
+    Return the score for a vector (line or column or diagonal)
+    '''
     string_list = enum_to_string(vector)
     score = {'white': 0, 'black': 0}
     length = len(string_list)
